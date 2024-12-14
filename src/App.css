@@ -1,0 +1,10 @@
+@font-face {
+  font-family: "Hakgyoansim";
+  font-weight: normal;
+  src: url("./fonts/Hakgyoansim.otf") format("truetype");
+}
+@font-face {
+  font-family: "Recipe";
+  font-weight: normal;
+  src: url("./fonts/Recipekorea.ttf") format("truetype");
+}

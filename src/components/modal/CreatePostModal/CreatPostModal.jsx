@@ -63,15 +63,14 @@ const CreatePostModal = () => {
   const handleSubmit = (e) => {
     e.preventDefault();
     console.log(contents);
-    // console.log(tags);
     const choicedTags = tags
       .filter((tag) => tag.isClick)
       .map((tag) => tag.name);
     console.log(choicedTags);
   };
-  // useEffect(() => {
-  //   handleUpload();
-  // }, [imageFile]);
+  useEffect(() => {
+    handleUpload();
+  }, [imageFile]);
   return (
     <FixedContainer>
       <Container>
@@ -147,6 +146,9 @@ const Container = styled.div`
   overflow: hidden;
   display: flex;
   flex-direction: column;
+  * {
+    font-family: "Hakgyoansim";
+  }
 `;
 
 const TopBox = styled.div`
@@ -154,6 +156,7 @@ const TopBox = styled.div`
   justify-content: space-between;
   align-items: center;
   border-bottom: 2px solid ${COLORS.main};
+
   padding: 0 5% 2% 0;
   .createNote__title {
     font-size: 20px;

@@ -154,3 +154,14 @@ html {
   -ms-overflow-style: none;
   scrollbar-width: none;
 }
+
+@font-face {
+  font-family: "Hakgyoansim";
+  font-weight: normal;
+  src: url("./fonts/Hakgyoansim.otf") format("truetype");
+}
+@font-face {
+  font-family: "Recipe";
+  font-weight: normal;
+  src: url("./fonts/ChangwonDangamAsac-Bold_0712.ttf") format("truetype");
+}
