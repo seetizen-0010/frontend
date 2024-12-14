@@ -11,7 +11,15 @@ export const PageContainer = styled.div`
 export const ScrollContainer = styled.div`
     flex: 1;
     overflow-y: scroll;
-    background-color: #f0f0f0;
+    height: 100vh;
+`;
+
+// GatContainer 스타일 정의
+export const GatContainer = styled.div`
+    display: flex;
+    justify-content: center; /* 태그 중앙 정렬 */
+    align-items: center;
+    padding: 10px 0; /* 위아래 약간의 간격 */
 `;
 
 // 게시판 리스트 컨테이너
@@ -72,7 +80,7 @@ export const Photo = styled.img`
 
 
 // 태그 컨테이너 (배경색과 테두리 없이 스타일링, 가로 배치)
-export const TagContainer = styled.div`
+export const TagsContainer = styled.div`
     display: flex;
     gap: 8px; /* 태그 간의 간격 */
     align-items: center; /* 세로 정렬 */
