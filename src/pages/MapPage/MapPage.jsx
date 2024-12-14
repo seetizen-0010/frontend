@@ -8,7 +8,7 @@ import { Container } from "../../styles/PageContainer.styles";
 import { useNavigate } from "react-router-dom";
 import { COLORS } from "../../theme";
 import { getData } from "../../apis/boardList/boardAxios";
-
+import { useLocation } from "react-router-dom";
 const tags = [
   "생활 안전",
   "교통 안전",
@@ -26,12 +26,28 @@ function MapPage() {
   const [boardDatas, setBoardDatas] = useState(null);
   const [filteringDatas, setFilteringDatas] = useState(null);
   const [choicedTag, setChoicedTag] = useState("");
+  const currentLocation = useLocation(); // 현재 URL 정보 가져오기
+  const searchParams = new URLSearchParams(currentLocation.search); // 쿼리 파라미터 추출
+
+  // 쿼리 파라미터 값 가져오기
+  const pinLat = searchParams.get("lat");
+  const pinLng = searchParams.get("lng");
+
+  useEffect(() => {
+    if (pinLat && pinLng) {
+      setLocation({ lat: parseFloat(pinLat), lng: parseFloat(pinLng) });
+      setIsPureMapPage(true);
+    } else {
+      setIsPureMapPage(false);
+    }
+  }, [pinLat, pinLng]);
 
   const navigate = useNavigate();
 
   useEffect(() => {
-    console.log(isPureMapPage);
+    console.log("page:", isPureMapPage);
   }, [isPureMapPage]);
+
   useEffect(() => {
     if (choicedTag !== "") {
       const newFilterDatas = boardDatas.filter((board) =>
@@ -49,8 +65,8 @@ function MapPage() {
           longitude: location.lng,
         };
         try {
-          const response = await getData(data); // getData 함수 호출
-          setBoardDatas(response.data); // 데이터 상태 저장
+          const response = await getData(data);
+          setBoardDatas(response.data);
           console.log("게시글 데이터:", response.data);
         } catch (error) {
           console.error("게시글 데이터를 가져오는 데 실패했습니다:", error);
@@ -85,26 +101,32 @@ function MapPage() {
       <MapContainer>
         {isLocationLoaded ? (
           <Map
-            level={3} // 지도 확대 레벨
+            level={3}
             center={location}
             style={{ width: "100%", height: "100dvh" }}
             className="mapContainer"
           >
             <Marker id="1" position={location} name="current" />
 
-            <TagContainer>
-              {tags.map((tag, index) => (
-                <Tag
-                  $isSelected={choicedTag === tag}
-                  onClick={() => setChoicedTag(tag)}
-                  key={index}
-                >
-                  {tag}
-                </Tag>
-              ))}
-            </TagContainer>
+            {!isPureMapPage && (
+              <TagContainer>
+                {tags.map((tag, index) => (
+                  <Tag
+                    $isSelected={choicedTag === tag}
+                    onClick={() => setChoicedTag(tag)}
+                    key={index}
+                  >
+                    {tag}
+                  </Tag>
+                ))}
+              </TagContainer>
+            )}
             {isPureMapPage ? (
-              <Marker id="1" position={location} name="marker" />
+              <Marker
+                id="1"
+                position={{ lat: pinLat, lng: pinLng }}
+                name="marker"
+              />
             ) : (
               filteringDatas?.map((data) => (
                 <Marker
@@ -112,13 +134,16 @@ function MapPage() {
                   key={data.id}
                   position={{ lat: data.latitude, lng: data.longitude }}
                   name={choicedTag}
+                  onClick={() => navigate(`/${data.id}`)}
                 />
               ))
             )}
             <Myposition lat={location.lat} lng={location.lng} />
           </Map>
         ) : (
-          <p>현재 위치를 가져오는 중...</p>
+          <Loading>
+            <p>데이터 가져오는 중...</p>
+          </Loading>
         )}
       </MapContainer>
     </Container>
@@ -144,9 +169,16 @@ const TagContainer = styled.div`
 const Tag = styled.div`
   padding: 10px 15px;
 
-  background-color: ${(props) => (props.$isSelected ? "#b8cbad" : "#607b51")};
-  color: ${(props) => (props.$isSelected ? "#586053" : "white")};
+  background-color: ${(props) =>
+    props.$isSelected ? "#cad8d1" : `${COLORS.main}`};
+  color: ${(props) => (props.$isSelected ? "#0d1508" : "#ffffff")};
   border-radius: 20px;
   font-size: 0.9rem;
   cursor: pointer;
+`;
+const Loading = styled.div`
+  height: 100dvh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 `;
