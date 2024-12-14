@@ -42,7 +42,7 @@ const NavBarContainer = styled.div`
   border-top: 3px solid ${COLORS.main};
   display: flex;
   justify-content: space-around;
-  position: sticky;
+  position: fixed;
   z-index: 5;
 `;
 
