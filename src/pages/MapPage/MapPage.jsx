@@ -9,14 +9,6 @@ import { useNavigate } from "react-router-dom";
 import { COLORS } from "../../theme";
 import { getData } from "../../apis/boardList/boardAxios";
 
-import axios from "axios";
-const datas = [
-  { id: 1, name: "Place 1", lat: 33.451022, lng: 126.570045 },
-  { id: 2, name: "Place 2", lat: 33.450512, lng: 126.570242 },
-  { id: 3, name: "Place 3", lat: 33.450892, lng: 126.570893 },
-  { id: 4, name: "Place 4", lat: 33.450113, lng: 126.570113 },
-  { id: 5, name: "Place 5", lat: 33.451342, lng: 126.570589 },
-];
 const tags = [
   "생활 안전",
   "교통 안전",
@@ -34,13 +26,7 @@ function MapPage() {
   const [boardDatas, setBoardDatas] = useState(null);
   const [filteringDatas, setFilteringDatas] = useState(null);
   const [choicedTag, setChoicedTag] = useState("");
-  // 경로 데이터 (pathData)
-  const pathData = [
-    { lat: 37.394725518530834, lng: 127.11015051307636 },
-    { lat: 37.394469584427156, lng: 127.10991634747967 },
-    { lat: 37.394469584427156, lng: 127.10966790676201 },
-    // 추가적인 좌표들...
-  ];
+
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -75,10 +61,6 @@ function MapPage() {
     }
   }, [isLocationLoaded, location]);
 
-  // useEffect(() => {
-  //   if (isLocationLoaded) fetchData();
-  // }, [isLocationLoaded]);
-
   useEffect(() => {
     if (navigator.geolocation) {
       navigator.geolocation.getCurrentPosition(
@@ -108,9 +90,8 @@ function MapPage() {
             style={{ width: "100%", height: "100dvh" }}
             className="mapContainer"
           >
-            {/* <MapMarker position={location}>
-            <div>현재 위치</div>
-          </MapMarker> */}
+            <Marker id="1" position={location} name="current" />
+
             <TagContainer>
               {tags.map((tag, index) => (
                 <Tag
@@ -123,14 +104,14 @@ function MapPage() {
               ))}
             </TagContainer>
             {isPureMapPage ? (
-              <Marker id="1" position={location} name="mark" />
+              <Marker id="1" position={location} name="marker" />
             ) : (
               filteringDatas?.map((data) => (
                 <Marker
                   id={data.id}
                   key={data.id}
                   position={{ lat: data.latitude, lng: data.longitude }}
-                  name="mark"
+                  name={choicedTag}
                 />
               ))
             )}

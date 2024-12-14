@@ -18,3 +18,12 @@ export const getData = async (data) => {
     console.error("Error sending data:", error);
   }
 };
+
+export const getDetailData = async (id) => {
+  try {
+    const response = await axiosInstance.get(`/posts/${id}`);
+    return response.data;
+  } catch (error) {
+    console.error("Error sending data:", error);
+  }
+};

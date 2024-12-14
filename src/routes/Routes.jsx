@@ -5,12 +5,14 @@ import Header from "../layout/Header/Header";
 import NavBar from "../layout/NavBar/NavBar";
 import MapPage from "../pages/MapPage/MapPage";
 import BoardList from "../pages/BoardList/BoardList";
+import DetailPage from "../pages/DetailPage/DetailPage";
 const Routes = () => {
   return (
     <ReactRouters>
       <Route path="/" element={<Layout />}>
         <Route index element={<BoardList />} />
         <Route path="/map" element={<MapPage />} />
+        <Route path="/:id" element={<DetailPage />} />
       </Route>
     </ReactRouters>
   );
