@@ -4,10 +4,15 @@ import { COLORS } from "../../../theme";
 import { FixedContainer, DeleteBox } from "../Modal.styles";
 import { useCreatePostStore } from "../../../store/modal/useModalStore";
 import axios from "axios";
+import { toast } from "react-toastify";
+import { postData } from "../../../apis/boardList/boardAxios";
+
 const CreatePostModal = () => {
   const [imagePreview, setImagePreview] = useState(null);
   const [imageFile, setImageFile] = useState(null);
   const [contents, setContents] = useState("");
+  const [address, setAddress] = useState(null);
+  const [AxiosResponse, setAxiosResponse] = useState(null);
   const { viewCreatePostModal, toggleCreatePostModal } = useCreatePostStore();
   const [tags, setTags] = useState([
     { name: "생활 안전", isClick: false },
@@ -15,6 +20,7 @@ const CreatePostModal = () => {
     { name: "화재 안전", isClick: false },
     { name: "재난 안전", isClick: false },
     { name: "공사중", isClick: false },
+    { name: "기타", isClick: false },
   ]);
   const handleTags = (tag) => {
     const newTags = tags.map((mytag) =>
@@ -33,11 +39,11 @@ const CreatePostModal = () => {
       setImageFile(file);
     }
   };
-  // useEffect(() => {
-  //   console.log(tags);
-  // }, [tags]);
+
   const handleUpload = async () => {
-    if (!imageFile && viewCreatePostModal) {
+    if (!viewCreatePostModal) return;
+
+    if (imageFile === null) {
       alert("이미지를 선택해주세요.");
       return;
     }
@@ -47,7 +53,7 @@ const CreatePostModal = () => {
     };
     try {
       const response = await axios.post(
-        "https://8ad6-59-18-161-28.ngrok-free.app/images",
+        "https://eebb-59-18-161-28.ngrok-free.app/images",
         formdata,
         {
           headers: {
@@ -55,21 +61,41 @@ const CreatePostModal = () => {
           },
         }
       );
-      console.log("이미지 업로드 성공:", response.data);
+      console.log("이미지 업로드 성공:", response.data.data);
+      setAxiosResponse(response.data.data);
     } catch (error) {
       console.error("이미지 업로드 실패:", error);
     }
   };
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    console.log(contents);
     const choicedTags = tags
       .filter((tag) => tag.isClick)
       .map((tag) => tag.name);
-    console.log(choicedTags);
+    const data = {
+      content: contents,
+      longitude: AxiosResponse?.longitude,
+      latitude: AxiosResponse?.latitude,
+      address: AxiosResponse?.address,
+      tag: choicedTags,
+      imageId: AxiosResponse?.imageId,
+    };
+
+    try {
+      const response = await postData(data); // postData 함수 호출
+      console.log("게시글 업로드 성공:", response);
+      toast.info("게시글이 작성되었습니다.");
+      toggleCreatePostModal();
+    } catch (error) {
+      console.error("게시글 업로드 실패:", error);
+      toast.error("게시글 작성이 실패하였습니다. 다시 시도해주세요.");
+    }
   };
   useEffect(() => {
-    handleUpload();
+    if (imageFile) {
+      handleUpload();
+    }
+    console.log(imageFile);
   }, [imageFile]);
   return (
     <FixedContainer>
@@ -230,8 +256,8 @@ const PosBox = styled.div`
   div {
     background-color: ${COLORS.background_green};
     border-radius: 50px;
-    padding: 4px 7px;
-    height: 50%;
+    padding: 4px 10px;
+    height: 25px;
     font-size: 0.8rem;
     display: flex;
     align-items: center;

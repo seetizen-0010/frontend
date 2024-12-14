@@ -1,6 +1,7 @@
 import { useMap } from "react-kakao-maps-sdk";
 import { useMemo } from "react";
 import styled from "styled-components";
+import { TbScanPosition } from "react-icons/tb";
 // 내 위치로 가는 함수
 const { kakao } = window;
 
@@ -16,7 +17,7 @@ function Myposition({ lat, lng }) {
 
   return (
     <MyPositionBtn type="button" onClick={() => map.setBounds(bounds)}>
-      +
+      <TbScanPosition />
     </MyPositionBtn>
   );
 }
@@ -31,5 +32,9 @@ const MyPositionBtn = styled.button`
   height: 32px;
   background-color: #ffffff;
   border: none;
+  font-size: 25px;
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1); /* 그림자 추가 */
+  display: flex;
+  align-items: center;
+  justify-content: center;
 `;

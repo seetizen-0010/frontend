@@ -10,7 +10,6 @@ const NavBar = () => {
   const location = useLocation().pathname; // 현재 URL 정보 가져오기
   const isLocationMap = location === "/map";
   const isLocationHome = location === "/";
-  console.log(location); // "/map" 출력
   return (
     <NavBarContainer>
       <IconBtn onClick={() => navigate("/")}>
@@ -21,7 +20,7 @@ const NavBar = () => {
           alt="home"
         />
       </IconBtn>
-      <IconBtn onClick={() => toggleCreatePostModal()}>
+      <IconBtn onClick={isLocationHome ? () => toggleCreatePostModal() : null}>
         <img className="secIcon" src="/images/newpostIcon.png" alt="newPost" />
       </IconBtn>
       <IconBtn onClick={() => navigate("/map")}>

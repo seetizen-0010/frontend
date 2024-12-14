@@ -1,6 +1,5 @@
 import { MapMarker } from "react-kakao-maps-sdk";
-
-const imageSize = { width: 50, height: 60 };
+const imageSize = { width: 40, height: 50 };
 
 function Marker({ id, name, position }) {
   return (
