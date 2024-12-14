@@ -7,6 +7,9 @@ import styled from "styled-components";
 import { Container } from "../../styles/PageContainer.styles";
 import { useNavigate } from "react-router-dom";
 import { COLORS } from "../../theme";
+import { getData } from "../../apis/boardList/boardAxios";
+
+import axios from "axios";
 const datas = [
   { id: 1, name: "Place 1", lat: 33.451022, lng: 126.570045 },
   { id: 2, name: "Place 2", lat: 33.450512, lng: 126.570242 },
@@ -28,7 +31,7 @@ function MapPage() {
   const [isLocationLoaded, setIsLocationLoaded] = useState(false);
   const [isPureMapPage, setIsPureMapPage] = useState(true);
   const { viewCreatePostModal, toggleCreatePostModal } = useCreatePostStore();
-
+  const [boardDatas, setBoardDatas] = useState(null);
   const [choicedTag, setChoicedTag] = useState("");
   // 경로 데이터 (pathData)
   const pathData = [
@@ -44,10 +47,35 @@ function MapPage() {
   }, [isPureMapPage]);
 
   useEffect(() => {
+    if (isLocationLoaded) {
+      const fetchBoardData = async () => {
+        const data = {
+          latitude: location.lat,
+          longitude: location.lng,
+        };
+        try {
+          const response = await getData(data); // getData 함수 호출
+          setBoardDatas(response.data); // 데이터 상태 저장
+          console.log("게시글 데이터:", response.data);
+        } catch (error) {
+          console.error("게시글 데이터를 가져오는 데 실패했습니다:", error);
+        }
+      };
+
+      fetchBoardData();
+    }
+  }, [isLocationLoaded, location]);
+
+  // useEffect(() => {
+  //   if (isLocationLoaded) fetchData();
+  // }, [isLocationLoaded]);
+
+  useEffect(() => {
     if (navigator.geolocation) {
       navigator.geolocation.getCurrentPosition(
         (position) => {
           const { latitude, longitude } = position.coords;
+
           setLocation({ lat: latitude, lng: longitude });
           setIsLocationLoaded(true); // 위치 로드 완료
         },
@@ -77,7 +105,7 @@ function MapPage() {
             <TagContainer>
               {tags.map((tag, index) => (
                 <Tag
-                  isSelected={choicedTag === tag}
+                  $isSelected={choicedTag === tag}
                   onClick={() => setChoicedTag(tag)}
                   key={index}
                 >
@@ -98,8 +126,6 @@ function MapPage() {
               ))
             )}
             <Myposition lat={location.lat} lng={location.lng} />
-
-            {/* Polyline을 사용하여 경로 데이터에 맞는 선 그리기 */}
           </Map>
         ) : (
           <p>현재 위치를 가져오는 중...</p>
@@ -128,8 +154,8 @@ const TagContainer = styled.div`
 const Tag = styled.div`
   padding: 10px 15px;
 
-  background-color: ${(props) => (props.isSelected ? "#b8cbad" : "#607b51")};
-  color: ${(props) => (props.isSelected ? "#586053" : "white")};
+  background-color: ${(props) => (props.$isSelected ? "#b8cbad" : "#607b51")};
+  color: ${(props) => (props.$isSelected ? "#586053" : "white")};
   border-radius: 20px;
   font-size: 0.9rem;
   cursor: pointer;

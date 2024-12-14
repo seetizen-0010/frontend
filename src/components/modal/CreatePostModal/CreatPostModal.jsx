@@ -53,7 +53,7 @@ const CreatePostModal = () => {
     };
     try {
       const response = await axios.post(
-        "https://eebb-59-18-161-28.ngrok-free.app/images",
+        "https://8fea-59-18-161-28.ngrok-free.app/images",
         formdata,
         {
           headers: {
