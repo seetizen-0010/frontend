@@ -6,6 +6,7 @@ import { useCreatePostStore } from "./store/modal/useModalStore";
 import CreatPostModal from "./components/modal/CreatePostModal/CreatPostModal";
 import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
+import Notification from "./components/Nofitication";
 
 function App() {
   const { viewCreatePostModal } = useCreatePostStore();
@@ -19,6 +20,7 @@ function App() {
       />
       {viewCreatePostModal && <CreatPostModal />}
       <BrowserRouter>
+        <Notification/>
         <Routes />
       </BrowserRouter>
     </div>
