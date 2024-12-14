@@ -32,19 +32,43 @@ const Boardlist = () => {
     const [data, setData] = useState([]); // 변수명 변경
     const [location, setLocation] = useState({ lat: 33.450701, lng: 126.570667 });
     const [isLocationLoaded, setIsLocationLoaded] = useState(false);
-    
-    const [liked, setLiked] = useState(false);
-    const [disliked, setDisliked] = useState(false);
+    const [likedStates, setLikedStates] = useState([]);
+    const [dislikedStates, setDislikedStates] = useState([]);
 
-    const handleLikeClick = () => {
-        setLiked(true);         // 좋아요를 눌렀을 때
-        setDisliked(false);     // 싫어요는 해제
+    const initializeStates = (dataLength) => {
+        setLikedStates(Array(dataLength).fill(false));
+        setDislikedStates(Array(dataLength).fill(false));
     };
 
-    const handleDislikeClick = () => {
-        setLiked(false);       // 좋아요는 해제
-        setDisliked(true);      // 싫어요를 눌렀을 때
+    const handleLikeClick = (index) => {
+        setLikedStates((prev) =>
+            prev.map((liked, i) => (i === index ? true : liked))
+        );
+        setDislikedStates((prev) =>
+            prev.map((disliked, i) => (i === index ? false : disliked))
+        );
     };
+
+    const handleDislikeClick = (index) => {
+        setDislikedStates((prev) =>
+            prev.map((disliked, i) => (i === index ? true : disliked))
+        );
+        setLikedStates((prev) =>
+            prev.map((liked, i) => (i === index ? false : liked))
+        );
+    };
+    // const [liked, setLiked] = useState(false);
+    // const [disliked, setDisliked] = useState(false);
+
+    // const handleLikeClick = () => {
+    //     setLiked(true);         // 좋아요를 눌렀을 때
+    //     setDisliked(false);     // 싫어요는 해제
+    // };
+
+    // const handleDislikeClick = () => {
+    //     setLiked(false);       // 좋아요는 해제
+    //     setDisliked(true);      // 싫어요를 눌렀을 때
+    // };
 
     // 요일 변환 함수
     // 시간 변환 함수
@@ -80,12 +104,12 @@ const Boardlist = () => {
          try {
            const response = await getData(data); // getData 함수 호출
            setData(response.data); // 데이터 상태 저장
+           initializeStates(response.data.length)
            console.log("게시글 데이터:", response.data);
          } catch (error) {
            console.error("게시글 데이터를 가져오는 데 실패했습니다:", error);
          }
        };
- 
        fetchBoardData();
      }
    }, [isLocationLoaded, location]);
@@ -113,7 +137,7 @@ const Boardlist = () => {
             <PageContainer>
                 <ScrollContainer>
                     <BoardlistContainer>
-                        {data.map((item) => (
+                        {data.map((item, index) => (
                             <BoardItem key={item.postid}>
                             {/* 프로필 이미지와 사용자명 */}
                                 <PostTitle>
@@ -142,11 +166,11 @@ const Boardlist = () => {
                                 <ButtonContainer>
                                     {/* 왼쪽 버튼들: 좋아요, 싫어요 */}
                                     <LeftButtons>
-                                        <Btn onClick={handleLikeClick} active={liked}>
+                                        <Btn onClick={() => handleLikeClick(index)} active={likedStates[index]}>
                                             <GoThumbsup />
                                         </Btn>
     
-                                        <Btn onClick={handleDislikeClick} active={disliked}>
+                                        <Btn onClick={() => handleDislikeClick(index)} active={dislikedStates[index]}>
                                             <GoThumbsdown/>
                                         </Btn>
                                         <Button>
