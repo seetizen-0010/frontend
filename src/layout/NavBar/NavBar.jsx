@@ -1,13 +1,17 @@
 import React from "react";
 import styled from "styled-components";
 import { COLORS } from "../../theme";
+import { useCreatePostStore } from "../../store/modal/useModalStore";
+
 const NavBar = () => {
+  const { viewCreatePostModal, toggleCreatePostModal } = useCreatePostStore();
+  const handleNewPostClick = () => {};
   return (
     <NavBarContainer>
       <IconBtn>
         <img src="/images/homeIcon.png" alt="home" />
       </IconBtn>
-      <IconBtn>
+      <IconBtn onClick={() => toggleCreatePostModal()}>
         <img className="secIcon" src="/images/newpostIcon.png" alt="newPost" />
       </IconBtn>
       <IconBtn>
@@ -27,7 +31,7 @@ const NavBarContainer = styled.div`
   display: flex;
   justify-content: space-around;
   position: sticky;
-  z-index: 100;
+  z-index: 5;
 `;
 
 const IconBtn = styled.button`
