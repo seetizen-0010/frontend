@@ -1,7 +1,20 @@
-import React from "react";
+import { MapMarker } from "react-kakao-maps-sdk";
 
-const Marker = () => {
-  return <div>Marker</div>;
-};
+const imageSize = { width: 50, height: 60 };
+
+function Marker({ id, name, position }) {
+  return (
+    <>
+      <MapMarker
+        key={`${position.lat},${position.lng}`}
+        position={position}
+        image={{
+          src: `/images/marker.png`,
+          size: imageSize,
+        }}
+      />
+    </>
+  );
+}
 
 export default Marker;
