@@ -1,21 +1,33 @@
-import React from "react";
+import React, { useState } from "react";
 import styled from "styled-components";
 import { COLORS } from "../../theme";
 import { useCreatePostStore } from "../../store/modal/useModalStore";
-
+import { useLocation } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 const NavBar = () => {
   const { viewCreatePostModal, toggleCreatePostModal } = useCreatePostStore();
-  const handleNewPostClick = () => {};
+  const navigate = useNavigate();
+  const location = useLocation().pathname; // 현재 URL 정보 가져오기
+  const isLocationMap = location === "/map";
+  const isLocationHome = location === "/";
   return (
     <NavBarContainer>
-      <IconBtn>
-        <img src="/images/homeIcon.png" alt="home" />
+      <IconBtn onClick={() => navigate("/")}>
+        <img
+          src={
+            isLocationHome ? "/images/homeActive.png" : "/images/homeIcon.png"
+          }
+          alt="home"
+        />
       </IconBtn>
-      <IconBtn onClick={() => toggleCreatePostModal()}>
+      <IconBtn onClick={isLocationHome ? () => toggleCreatePostModal() : null}>
         <img className="secIcon" src="/images/newpostIcon.png" alt="newPost" />
       </IconBtn>
-      <IconBtn>
-        <img src="/images/mapIcon.png" alt="map" />
+      <IconBtn onClick={() => navigate("/map")}>
+        <img
+          src={isLocationMap ? "/images/mapActive.png" : "/images/mapIcon.png"}
+          alt="map"
+        />
       </IconBtn>
     </NavBarContainer>
   );
