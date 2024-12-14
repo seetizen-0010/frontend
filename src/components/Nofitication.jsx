@@ -12,9 +12,13 @@ const Notification = () => {
       const eventSource = new EventSource(`${process.env.REACT_APP_BASE_URL}/sse/connect/${sseId}`);
       
       eventSource.addEventListener("MESSAGE", (event) => {
+        console.log(event)
+        const data = JSON.parse(event.data)
+        console.log(data)
         const newNotification = {
           id: Date.now(),
-          message: event.data, // 서버로부터 받은 메시지
+          postId: data.url,
+          message: data.title,
         };
         setNotifications((prev) => [...prev, newNotification]);
       });
@@ -44,7 +48,7 @@ const Notification = () => {
     <div className="notification-container">
       {notifications.map((notification) => (
         <div key={notification.id} className="notification">
-          <span>{notification.message}</span>
+          <span>{notification.postId} {notification.message}</span>
           <button className="close-btn" onClick={() => removeNotification(notification.id)}>
             X
           </button>
