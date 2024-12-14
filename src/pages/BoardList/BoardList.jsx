@@ -26,6 +26,7 @@ import { GoThumbsup } from "react-icons/go";
 import { GoThumbsdown } from "react-icons/go";
 import { GoComment } from "react-icons/go";
 import { GoReport } from "react-icons/go";
+import { useNavigate } from "react-router-dom";
 
 
 const Boardlist = () => {
@@ -34,6 +35,7 @@ const Boardlist = () => {
     const [isLocationLoaded, setIsLocationLoaded] = useState(false);
     const [likedStates, setLikedStates] = useState([]);
     const [dislikedStates, setDislikedStates] = useState([]);
+    const navigate = useNavigate();
 
     const initializeStates = (dataLength) => {
         setLikedStates(Array(dataLength).fill(false));
@@ -132,13 +134,18 @@ const Boardlist = () => {
         }
       }, []);
 
+
+    const navigateToDetailPage = (id) => {
+        navigate(`/${id}`)
+    }
+
     return (
         <Container>
             <PageContainer>
                 <ScrollContainer>
                     <BoardlistContainer>
                         {data.map((item, index) => (
-                            <BoardItem key={item.postid}>
+                            <BoardItem key={item.id} onClick={() => navigateToDetailPage(item.id)}>
                             {/* 프로필 이미지와 사용자명 */}
                                 <PostTitle>
                                     <ProfileImage src="/images/profile.png" alt="프로필 이미지" />
