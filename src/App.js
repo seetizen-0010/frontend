@@ -1,7 +1,7 @@
 import "./App.css";
 import { BrowserRouter } from "react-router-dom";
 import Routes from "./routes/Routes";
-import styled from "styled-components";
+// import styled from "styled-components";
 import { useCreatePostStore } from "./store/modal/useModalStore";
 import CreatPostModal from "./components/modal/CreatePostModal/CreatPostModal";
 import { ToastContainer } from "react-toastify";
