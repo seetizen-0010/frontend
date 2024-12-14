@@ -1,7 +1,7 @@
 import React from "react";
-
+import { Container } from "../../styles/PageContainer.styles";
 const BoardList = () => {
-  return <div>BoardList</div>;
+  return <Container>BoardList</Container>;
 };
 
 export default BoardList;

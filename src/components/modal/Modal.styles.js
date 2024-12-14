@@ -1,11 +1,12 @@
 import styled from "styled-components";
+
 export const FixedContainer = styled.div`
   position: fixed;
   top: 0;
   right: 0;
-  z-index: 5;
+  z-index: 10;
   width: 100%;
-  height: 100vh;
+  height: 100dvh;
   display: flex;
   align-items: center;
   justify-content: center;
