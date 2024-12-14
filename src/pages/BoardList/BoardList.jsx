@@ -6,13 +6,14 @@ import { getData } from "../../apis/boardList/boardAxios";
 import {
     PageContainer,
     ScrollContainer,
+    GatContainer,
     BoardlistContainer,
     BoardItem,
     ProfileImage,
     Photo,
     PostTitle,
     // AddressContainer,
-    TagContainer,
+    TagsContainer,
     TagItem,
     ButtonContainer,
     LeftButtons,
@@ -26,7 +27,16 @@ import { GoThumbsup } from "react-icons/go";
 import { GoThumbsdown } from "react-icons/go";
 import { GoComment } from "react-icons/go";
 import { GoReport } from "react-icons/go";
-
+import styled from "styled-components";
+import { COLORS } from "../../theme";
+const tags = [
+    "생활 안전",
+    "교통 안전",
+    "화재 안전",
+    "재난 안전",
+    "공사중",
+    "기타",
+  ];
 
 const Boardlist = () => {
     const [data, setData] = useState([]); // 변수명 변경
@@ -34,6 +44,9 @@ const Boardlist = () => {
     const [isLocationLoaded, setIsLocationLoaded] = useState(false);
     const [likedStates, setLikedStates] = useState([]);
     const [dislikedStates, setDislikedStates] = useState([]);
+    const [choicedTag, setChoicedTag] = useState("");
+    const [filteringDatas, setFilteringDatas] = useState(null);
+    
 
     const initializeStates = (dataLength) => {
         setLikedStates(Array(dataLength).fill(false));
@@ -92,7 +105,15 @@ const Boardlist = () => {
 
         return `${year}년 ${month}월 ${day}일 ${hours}:${minutes}`;
     };
-
+  useEffect(() => {
+    if (choicedTag !== "") {
+      const newFilterDatas = data.filter((board) =>
+        board.tag.includes(choicedTag)
+      );
+      setFilteringDatas(newFilterDatas);
+      console.log("datas:",newFilterDatas);
+    }
+  }, [choicedTag]);
     // 데이터 호출
    useEffect(() => {
      if (isLocationLoaded) {
@@ -104,6 +125,8 @@ const Boardlist = () => {
          try {
            const response = await getData(data); // getData 함수 호출
            setData(response.data); // 데이터 상태 저장
+           setFilteringDatas(response.data)
+
            initializeStates(response.data.length)
            console.log("게시글 데이터:", response.data);
          } catch (error) {
@@ -136,8 +159,20 @@ const Boardlist = () => {
         <Container>
             <PageContainer>
                 <ScrollContainer>
+                        <TagContainer>
+                             {tags.map((tag, index) => (
+                                <Tag
+                                $isSelected={choicedTag === tag}
+                                onClick={() => setChoicedTag(tag)}
+                                key={index}
+                                >
+                                    {tag}
+                                </Tag>
+                              ))}
+                          </TagContainer>
                     <BoardlistContainer>
-                        {data.map((item, index) => (
+                                   
+                        {filteringDatas?.map((item, index) => (
                             <BoardItem key={item.postid}>
                             {/* 프로필 이미지와 사용자명 */}
                                 <PostTitle>
@@ -152,7 +187,7 @@ const Boardlist = () => {
                                 {/* 이미지 */}
                                 <Photo src={item.image} alt="게시물 이미지" />
                                 {/* 태그 컨테이너 */}
-                                <TagContainer className="tag-container">
+                                <TagsContainer className="tag-container">
                                     {Array.isArray(item.tag) && item.tag.length > 0 ? (
                                         item.tag.map((tag, index) => (
                                             <TagItem key={index} className="tag-item">{tag}</TagItem>
@@ -160,7 +195,7 @@ const Boardlist = () => {
                                     ) : (
                                         <p>태그가 없습니다</p>
                                     )}
-                                </TagContainer>
+                                </TagsContainer>
     
                                 {/* 버튼들 */}
                                 <ButtonContainer>
@@ -207,3 +242,21 @@ const Boardlist = () => {
     };
 
 export default Boardlist;
+const TagContainer = styled.div`
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  z-index: 1000;
+  background-color:#FAF8EA;
+  padding:5px;
+`;
+
+const Tag = styled.div`
+  padding: 10px 15px;
+  background-color: ${(props) => (props.$isSelected ? "#b8cbad" : "#607b51")};
+  color: ${(props) => (props.$isSelected ? "#586053" : "white")};
+  border-radius: 20px;
+  font-size: 0.9rem;
+  cursor: pointer;
+`;
+
