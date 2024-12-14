@@ -53,7 +53,7 @@ const CreatePostModal = () => {
     };
     try {
       const response = await axios.post(
-        "https://8fea-59-18-161-28.ngrok-free.app/images",
+        `${process.env.REACT_APP_BASE_URL}/images`,
         formdata,
         {
           headers: {
@@ -135,7 +135,11 @@ const CreatePostModal = () => {
           </TextBox>
           <PosBox>
             <Title>위치</Title>
-            <div>사진의 위치가 표시 됩니다.</div>
+            <div>
+              {AxiosResponse
+                ? AxiosResponse.address
+                : "사진의 위치가 표시 됩니다."}
+            </div>
           </PosBox>
           <TagBox>
             <Title>태그 추가</Title>

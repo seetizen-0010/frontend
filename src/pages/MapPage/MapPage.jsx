@@ -29,9 +29,10 @@ function MapPage() {
   // 사용자 위치를 상태로 관리
   const [location, setLocation] = useState({ lat: 33.450701, lng: 126.570667 });
   const [isLocationLoaded, setIsLocationLoaded] = useState(false);
-  const [isPureMapPage, setIsPureMapPage] = useState(true);
+  const [isPureMapPage, setIsPureMapPage] = useState(false);
   const { viewCreatePostModal, toggleCreatePostModal } = useCreatePostStore();
   const [boardDatas, setBoardDatas] = useState(null);
+  const [filteringDatas, setFilteringDatas] = useState(null);
   const [choicedTag, setChoicedTag] = useState("");
   // 경로 데이터 (pathData)
   const pathData = [
@@ -45,6 +46,14 @@ function MapPage() {
   useEffect(() => {
     console.log(isPureMapPage);
   }, [isPureMapPage]);
+  useEffect(() => {
+    if (choicedTag !== "") {
+      const newFilterDatas = boardDatas.filter((board) =>
+        board.tag.includes(choicedTag)
+      );
+      setFilteringDatas(newFilterDatas);
+    }
+  }, [choicedTag]);
 
   useEffect(() => {
     if (isLocationLoaded) {
@@ -116,11 +125,11 @@ function MapPage() {
             {isPureMapPage ? (
               <Marker id="1" position={location} name="mark" />
             ) : (
-              datas.map((data) => (
+              filteringDatas?.map((data) => (
                 <Marker
-                  id="1"
+                  id={data.id}
                   key={data.id}
-                  position={{ lat: data.lat, lng: data.lng }}
+                  position={{ lat: data.latitude, lng: data.longitude }}
                   name="mark"
                 />
               ))
