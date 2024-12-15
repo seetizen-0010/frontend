@@ -1,10 +1,12 @@
 import React, { useState, useEffect } from "react";
 import "./Notification.css";
+import { useNavigate } from "react-router-dom";
 
 // Notification Component
 const Notification = () => {
   const [notifications, setNotifications] = useState([]);
   const sseId = 'test'
+  const navigate = useNavigate();
   
   useEffect(() => {
     try{
@@ -17,7 +19,7 @@ const Notification = () => {
         console.log(data)
         const newNotification = {
           id: Date.now(),
-          postId: data.url,
+          postId: data.postId,
           message: data.title,
         };
         setNotifications((prev) => [...prev, newNotification]);
@@ -44,11 +46,15 @@ const Notification = () => {
     setNotifications((prev) => prev.filter((notification) => notification.id !== id));
   };
 
+  const navigateToDetailPage = (id) => {
+    navigate(`/${id}`);
+  };
+
   return (
     <div className="notification-container">
       {notifications.map((notification) => (
-        <div key={notification.id} className="notification">
-          <span>{notification.postId} {notification.message}</span>
+        <div key={notification.id} className="notification" onClick={() => navigateToDetailPage(notification.postId)}>
+          <span>{notification.message}</span>
           <button className="close-btn" onClick={() => removeNotification(notification.id)}>
             X
           </button>
