@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { Map, Polyline } from "react-kakao-maps-sdk";
+import { CustomOverlayMap, Map, Polyline } from "react-kakao-maps-sdk";
 import Marker from "../../components/map/Marker";
 import Myposition from "../../components/map/MyPosition";
 import { useCreatePostStore } from "../../store/modal/useModalStore";
@@ -9,6 +9,9 @@ import { useNavigate } from "react-router-dom";
 import { COLORS } from "../../theme";
 import { getData } from "../../apis/boardList/boardAxios";
 import { useLocation } from "react-router-dom";
+
+import "./MapPage.css";
+
 const tags = [
   "생활 안전",
   "교통 안전",
@@ -17,17 +20,20 @@ const tags = [
   "공사중",
   "기타",
 ];
+
+
 function MapPage() {
   // 사용자 위치를 상태로 관리
   const [location, setLocation] = useState({ lat: 33.450701, lng: 126.570667 });
   const [isLocationLoaded, setIsLocationLoaded] = useState(false);
   const [isPureMapPage, setIsPureMapPage] = useState(false);
   const { viewCreatePostModal, toggleCreatePostModal } = useCreatePostStore();
-  const [boardDatas, setBoardDatas] = useState(null);
+  const [boardDatas, setBoardDatas] = useState([]);
   const [filteringDatas, setFilteringDatas] = useState(null);
   const [choicedTag, setChoicedTag] = useState("");
   const currentLocation = useLocation(); // 현재 URL 정보 가져오기
   const searchParams = new URLSearchParams(currentLocation.search); // 쿼리 파라미터 추출
+  const [pureMapMarkerInfo, setPureMapMarkerInfo] = useState({});
 
   // 쿼리 파라미터 값 가져오기
   const pinLat = searchParams.get("lat");
@@ -78,6 +84,14 @@ function MapPage() {
   }, [isLocationLoaded, location]);
 
   useEffect(() => {
+    if (isPureMapPage && boardDatas.length > 0) {
+      const board = boardDatas.find(board => board.latitude == pinLat && board.longitude == pinLng);
+      console.log(board)
+      setPureMapMarkerInfo(board);
+    }
+  },[isPureMapPage, boardDatas])
+
+  useEffect(() => {
     if (navigator.geolocation) {
       navigator.geolocation.getCurrentPosition(
         (position) => {
@@ -122,11 +136,41 @@ function MapPage() {
               </TagContainer>
             )}
             {isPureMapPage ? (
-              <Marker
-                id="1"
-                position={{ lat: pinLat, lng: pinLng }}
-                name="marker"
-              />
+              <>
+                <Marker
+                  id="1"
+                  position={{ lat: pureMapMarkerInfo.latitude, lng: pureMapMarkerInfo.longitude }}
+                  name="marker"
+                />
+                  <CustomOverlayMap
+                    position={{
+                      lat: pureMapMarkerInfo.latitude, // 위도
+                      lng: pureMapMarkerInfo.longitude, // 경도
+                    }}
+                  >
+                    <div
+                      className="map-marker-info"
+                    >
+                      <div style={{ marginBottom: "5px", fontWeight: "bold" }}>
+                        {pureMapMarkerInfo.address}
+                      </div>
+                      <div style={{ marginBottom: "5px", color: "#888" }}>
+                        {new Date(pureMapMarkerInfo.createdAt).toLocaleString()}{" "}
+                        {/* 날짜 포맷 변경 */}
+                      </div>
+                      <div
+                        style={{
+                          whiteSpace: "nowrap",
+                          overflow: "hidden",
+                          textOverflow: "ellipsis",
+                        }}
+                        title={pureMapMarkerInfo.content} // 전체 내용을 툴팁으로 표시
+                      >
+                        {pureMapMarkerInfo.content}
+                      </div>
+                    </div>
+                  </CustomOverlayMap>
+              </>
             ) : (
               filteringDatas?.map((data) => (
                 <Marker
@@ -134,7 +178,7 @@ function MapPage() {
                   key={data.id}
                   position={{ lat: data.latitude, lng: data.longitude }}
                   name={choicedTag}
-                  onClick={() => navigate(`/${data.id}`)}
+                  onClick={() => navigate(`/${data.id}`)} // 해당 데이터 ID로 이동
                 />
               ))
             )}
