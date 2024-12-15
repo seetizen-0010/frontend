@@ -34,7 +34,6 @@ function MapPage() {
   const currentLocation = useLocation(); // 현재 URL 정보 가져오기
   const searchParams = new URLSearchParams(currentLocation.search); // 쿼리 파라미터 추출
   const [pureMapMarkerInfo, setPureMapMarkerInfo] = useState({});
-
   // 쿼리 파라미터 값 가져오기
   const pinLat = searchParams.get("lat");
   const pinLng = searchParams.get("lng");
@@ -110,6 +109,10 @@ function MapPage() {
     }
   }, []);
 
+  const navigateToDetailPage = (id) => {
+    navigate(`/${id}`);
+  };
+
   return (
     <Container>
       <MapContainer>
@@ -147,9 +150,11 @@ function MapPage() {
                       lat: pureMapMarkerInfo.latitude, // 위도
                       lng: pureMapMarkerInfo.longitude, // 경도
                     }}
+                    
                   >
                     <div
                       className="map-marker-info"
+                      onClick={() => navigateToDetailPage(pureMapMarkerInfo.id)}
                     >
                       <div style={{ marginBottom: "5px", fontWeight: "bold" }}>
                         {pureMapMarkerInfo.address}
