@@ -20,7 +20,7 @@ const NavBar = () => {
           alt="home"
         />
       </IconBtn>
-      <IconBtn onClick={isLocationHome ? () => toggleCreatePostModal() : null}>
+      <IconBtn onClick={!isLocationMap ? () => toggleCreatePostModal() : null}>
         <img className="secIcon" src="/images/newpostIcon.png" alt="newPost" />
       </IconBtn>
       <IconBtn onClick={() => navigate("/map")}>

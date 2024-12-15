@@ -152,7 +152,7 @@ const Boardlist = () => {
                 onClick={() => setChoicedTag(tag)}
                 key={index}
               >
-                {tag}
+                # {tag}
               </Tag>
             ))}
           </TagContainer>
@@ -176,7 +176,14 @@ const Boardlist = () => {
                     </PostTitle>
 
                     {/* 이미지 */}
-                    <Photo src={item.image} alt="게시물 이미지" />
+                    <Photo
+                      src={
+                        process.env.REACT_APP_BASE_URL +
+                        "/images/" +
+                        item.imageId
+                      }
+                      alt="게시물 이미지"
+                    />
 
                     {/* 태그 컨테이너 */}
                     <TagsContainer>
@@ -241,18 +248,22 @@ export default Boardlist;
 // 스타일 컴포넌트
 const TagContainer = styled.div`
   display: flex;
+  justify-content: space-around;
   flex-wrap: wrap;
   gap: 10px;
   background-color: #faf8ea;
-  padding: 5px;
+  padding: 20px 20px 0 20px;
 `;
 
 const Tag = styled.div`
   padding: 10px 15px;
+  width: 20%;
   background-color: ${(props) =>
     props.$isSelected ? "#cad8d1" : `${COLORS.main}`};
   color: ${(props) => (props.$isSelected ? "#0d1508" : "#ffffff")};
   border-radius: 20px;
   font-size: 0.9rem;
+  display: flex;
+  justify-content: center;
   cursor: pointer;
 `;
