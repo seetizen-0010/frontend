@@ -101,8 +101,8 @@ function MapPage() {
       <MapContainer>
         {isLocationLoaded ? (
           <Map
-            level={3}
-            center={location}
+            level={5}
+            center={pinLat && pinLng ? { lat: pinLat, lng: pinLng } : location}
             style={{ width: "100%", height: "100dvh" }}
             className="mapContainer"
           >
@@ -116,7 +116,7 @@ function MapPage() {
                     onClick={() => setChoicedTag(tag)}
                     key={index}
                   >
-                    {tag}
+                    # {tag}
                   </Tag>
                 ))}
               </TagContainer>
@@ -161,14 +161,22 @@ const TagContainer = styled.div`
   top: 10px;
   left: 10px;
   display: flex;
-  flex-wrap: wrap;
   gap: 10px;
   z-index: 1000;
+  width: 100%;
+  overflow-x: scroll; /* 가로 스크롤 유지 */
+  white-space: nowrap;
+  -webkit-overflow-scrolling: touch; /* 모바일 스크롤 부드럽게 */
+
+  /* 스크롤바 숨김 (크로스 브라우저 대응) */
+  scrollbar-width: none; /* Firefox */
+  &::-webkit-scrollbar {
+    display: none; /* Chrome, Safari */
+  }
 `;
 
 const Tag = styled.div`
   padding: 10px 15px;
-
   background-color: ${(props) =>
     props.$isSelected ? "#cad8d1" : `${COLORS.main}`};
   color: ${(props) => (props.$isSelected ? "#0d1508" : "#ffffff")};
@@ -176,6 +184,7 @@ const Tag = styled.div`
   font-size: 0.9rem;
   cursor: pointer;
 `;
+
 const Loading = styled.div`
   height: 100dvh;
   display: flex;

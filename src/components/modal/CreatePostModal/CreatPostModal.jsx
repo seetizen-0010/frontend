@@ -22,11 +22,22 @@ const CreatePostModal = () => {
     { name: "공사중", isClick: false },
     { name: "기타", isClick: false },
   ]);
+  const [dangers, setDangers] = useState([
+    { name: "저위험", isClick: false },
+    { name: "중위험", isClick: false },
+    { name: "고위험", isClick: false },
+  ]);
   const handleTags = (tag) => {
     const newTags = tags.map((mytag) =>
       mytag.name === tag.name ? { ...mytag, isClick: !mytag.isClick } : mytag
     );
     setTags(newTags);
+  };
+  const handleDangerBtns = (btn) => {
+    const newBtns = dangers.map((mybtn) =>
+      mybtn.name === btn.name ? { ...mybtn, isClick: !mybtn.isClick } : mybtn
+    );
+    setDangers(newBtns);
   };
   const handleImageChange = (event) => {
     const file = event.target.files[0];
@@ -134,8 +145,23 @@ const CreatePostModal = () => {
             />
           </TextBox>
           <PosBox>
+            <Title>위험도</Title>
+            <DangerBox>
+              {dangers.map((danger, index) => (
+                <DangerBtn
+                  key={index}
+                  name={danger.name}
+                  $isClick={danger.isClick}
+                  onClick={() => handleDangerBtns(danger)}
+                >
+                  {danger.name}
+                </DangerBtn>
+              ))}
+            </DangerBox>
+          </PosBox>
+          <PosBox>
             <Title>위치</Title>
-            <div>
+            <div className="pos">
               {AxiosResponse
                 ? AxiosResponse.address
                 : "사진의 위치가 표시 됩니다."}
@@ -257,7 +283,7 @@ const InputContent = styled.textarea`
 
 const PosBox = styled.div`
   width: 100%;
-  div {
+  .pos {
     background-color: ${COLORS.background_green};
     border-radius: 50px;
     padding: 4px 10px;
@@ -303,4 +329,39 @@ const SubmitBtn = styled.button`
   border-radius: 60px;
   background-color: ${COLORS.main};
   color: ${COLORS.background_green};
+`;
+const DangerBox = styled.div`
+  display: flex;
+  justify-content: space-between;
+`;
+const DangerBtn = styled.button`
+  width: 30%;
+  height: 30px;
+  border-radius: 50px;
+  background-color: ${(props) => {
+    if (props.$isClick) {
+      // 클릭된 경우 색상 설정
+      switch (props.name) {
+        case "저위험":
+          return "#FFD700";
+        case "중위험":
+          return "#FFA500";
+        case "고위험":
+          return "#FF4500";
+        default:
+          return `${COLORS.main}`;
+      }
+    } else {
+      switch (props.name) {
+        case "저위험":
+          return "#FFFACD";
+        case "중위험":
+          return "#FFE4B5";
+        case "고위험":
+          return "#FFC0CB";
+        default:
+          return `${COLORS.background_green}`; // 기본 색상
+      }
+    }
+  }};
 `;
